@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    description: This is a silly demo
+    language: Go
+    owner: Viktor Farcic (viktor@farcic.com)
+    team: dot
+  labels:
+    app.kubernetes.io/name: silly-demo
+  name: silly-demo
+  namespace: production
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: silly-demo
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: silly-demo
+    spec:
+      containers:
+      - env:
+        - name: DB_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              key: endpoint
+              name: silly-demo
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              key: port
+              name: silly-demo
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: silly-demo
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: silly-demo
+        - name: DB_NAME
+          value: silly-demo
+        image: c8n.io/vfarcic/silly-demo:1.4.56
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+        name: silly-demo
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 250m
+            memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    description: This is a silly demo
+    language: Go
+    owner: Viktor Farcic (viktor@farcic.com)
+    team: dot
+  labels:
+    app.kubernetes.io/name: silly-demo
+  name: silly-demo
+  namespace: production
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: silly-demo
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    description: This is a silly demo
+    language: Go
+    owner: Viktor Farcic (viktor@farcic.com)
+    team: dot
+  labels:
+    app.kubernetes.io/name: silly-demo
+  name: silly-demo
+  namespace: production
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: sillydemo.127.0.0.1.nip.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: silly-demo
+            port:
+              number: 8080
+        path: /
+        pathType: ImplementationSpecific
+---
+apiVersion: v1
+data:
+  password: cG9zdGdyZXM=
+kind: Secret
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+  labels:
+    app.kubernetes.io/name: silly-demo
+  name: silly-demo-password
+  namespace: production
+---

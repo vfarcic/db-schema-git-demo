@@ -1,0 +1,14 @@
+---
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQLClaim
+metadata:
+  name: silly-demo
+spec:
+  id: silly-demo
+  compositionSelector:
+    matchLabels:
+      provider: aws-official
+      db: postgresql
+  parameters:
+    version: "15.3"
+    size: medium
