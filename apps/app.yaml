@@ -9,7 +9,7 @@ metadata:
   labels:
     app.kubernetes.io/name: silly-demo
   name: silly-demo
-  namespace: silly-demo
+  namespace: production
 spec:
   replicas: 2
   selector:
@@ -75,7 +75,7 @@ metadata:
   labels:
     app.kubernetes.io/name: silly-demo
   name: silly-demo
-  namespace: silly-demo
+  namespace: production
 spec:
   ports:
   - name: http
@@ -97,7 +97,7 @@ metadata:
   labels:
     app.kubernetes.io/name: silly-demo
   name: silly-demo
-  namespace: silly-demo
+  namespace: production
 spec:
   ingressClassName: traefik
   rules:
@@ -122,5 +122,5 @@ metadata:
   labels:
     app.kubernetes.io/name: silly-demo
   name: silly-demo-password
-  namespace: silly-demo
+  namespace: production
 ---
