@@ -19,7 +19,7 @@ spec:
     passwordFrom:
       secretKeyRef:
         key: password
-        name: silly-demo-app
+        name: silly-demo
     database: silly-demo
     # parameters:
     #   sslmode: disable
